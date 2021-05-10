@@ -30,5 +30,7 @@ RUN apk add --no-cache  tini \
 WORKDIR /
 ENV SHELL_OPERATOR_HOOKS_DIR /hooks
 ENV LOG_TYPE json
+ENV DEBUG_UNIX_SOCKET /tmp/shell-operator/debug.socket
+USER 65534:65534
 ENTRYPOINT ["/sbin/tini", "--", "/shell-operator"]
 CMD ["start"]
