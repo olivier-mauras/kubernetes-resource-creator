@@ -1,0 +1,49 @@
+apiVersion: "krc.io/v1"
+kind: Operator
+metadata:
+  name: namespace-watcher
+spec:
+  config: |
+    configVersion: v1
+    kubernetes:
+    - name: OnCreateNamespace
+      apiVersion: v1
+      kind: Namespace
+      executeHookOnEvent:
+      - Added
+      fieldSelector:
+        matchExpressions:
+        - field: "metadata.name"
+          operator: "NotEquals"
+          value: "default"
+        - field: "metadata.name"
+          operator: "NotEquals"
+          value: "kube-system"
+        - field: "metadata.name"
+          operator: "NotEquals"
+          value: "kube-public"
+        - field: "metadata.name"
+          operator: "NotEquals"
+          value: "kube-node-lease"
+        - field: "metadata.name"
+          operator: "NotEquals"
+          value: "kubernetes-resources-creator"
+  resources:
+    service_account_test: |
+      ---
+      operation: CreateOrUpdate
+      object:
+        apiVersion: v1
+        kind: ServiceAccount
+        metadata:
+          name: test
+          namespace: {{ object.metadata.name }}
+    service_account_test2: |
+      ---
+      operation: CreateOrUpdate
+      object:
+        apiVersion: v1
+        kind: ServiceAccount
+        metadata:
+          name: test2
+          namespace: {{ object.metadata.name }}
