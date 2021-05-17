@@ -14,6 +14,9 @@ spec:
     args:
       - "-c"
       - "while true; do sleep 3600; done"
+    env:
+      - name: HOOK_OPERATOR_NAME
+        value: namespace-watcher
   serviceAccountName: namespace-watcher
   securityContext:
     runAsUser: 65534
