@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: traffic-permissions-per-svc
+  namespace: kubernetes-resource-creator
+spec:
+  containers:
+  - name: traffic-permissions-per-svc
+    image: 192.168.122.178:5000/krc:test
+    imagePullPolicy: Always
+    env:
+      - name: HOOK_OPERATOR_NAME
+        value: traffic-permissions-per-svc
+  serviceAccountName: traffic-permissions-per-svc
+  securityContext:
+    runAsUser: 65534
+    runAsGroup: 65534

@@ -29,21 +29,25 @@ spec:
           operator: "NotEquals"
           value: "kubernetes-resources-creator"
   resources:
-    service_account_test: |
+    default_service_account: |
       ---
       operation: CreateOrUpdate
       object:
         apiVersion: v1
         kind: ServiceAccount
         metadata:
-          name: test
+          name: default-rbac-permissions-sa
           namespace: {{ object.metadata.name }}
-    service_account_test2: |
+    default_netpol: |
       ---
       operation: CreateOrUpdate
       object:
-        apiVersion: v1
-        kind: ServiceAccount
+        apiVersion: networking.k8s.io/v1
+        kind: NetworkPolicy
         metadata:
-          name: test2
+          name: default-deny-ingress
           namespace: {{ object.metadata.name }}
+        spec:
+          podSelector: {}
+          policyTypes:
+          - Ingress

@@ -1,0 +1,47 @@
+apiVersion: "krc.io/v1"
+kind: Operator
+metadata:
+  name: traffic-permissions-per-svc
+spec:
+  config: |
+    configVersion: v1
+    kubernetes:
+    - name: OnCreateService
+      apiVersion: v1
+      kind: Service
+      executeHookOnEvent:
+      - Added
+      fieldSelector:
+        matchExpressions:
+        - field: "metadata.namespace"
+          operator: "NotEquals"
+          value: "default"
+        - field: "metadata.namespace"
+          operator: "NotEquals"
+          value: "kube-system"
+        - field: "metadata.namespace"
+          operator: "NotEquals"
+          value: "kube-public"
+        - field: "metadata.namespace"
+          operator: "NotEquals"
+          value: "kube-node-lease"
+        - field: "metadata.namespace"
+          operator: "NotEquals"
+          value: "kubernetes-resources-creator"
+  resources:
+    traffic-permission: |
+      ---
+      operation: CreateOrUpdate
+      object:
+        apiVersion: v1beta1
+        kind: traffic-permission
+        metadata:
+          name: per-svc-permission
+        spec:
+          sources:
+            - match:
+               service: {{ "svc_{}_{}".format(object.metadata.name, object.spec.ports[0].port) }}
+          destinations:
+            - match:
+                service: '*'
+
